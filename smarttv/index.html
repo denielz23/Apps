@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PirateTV - by denielz</title>
+
+<style>
+:root{
+  --bg:#061219;
+  --panel:#0f1720;
+  --accent:#00aaff;
+  --muted:rgba(255,255,255,0.7);
+}
+
+/* RESET */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg,#05121a 0%, #071722 60%);
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* LAYOUT BASE */
+.app-shell{display:flex;height:100vh;width:100vw}
+
+/* --- LATERAL MENU --- */
+.side-menu{
+  width:90px;
+  background:linear-gradient(180deg, rgba(0,0,0,0.35), transparent);
+  padding:20px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+}
+.menu-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0.85;
+  transition:0.2s;
+}
+.menu-icon:hover{
+  transform:scale(1.15);
+}
+.menu-icon.active{
+  background:linear-gradient(180deg, rgba(0,170,255,0.15), rgba(0,170,255,0.05));
+  border-left:3px solid var(--accent);
+  box-shadow:0 6px 20px rgba(0,170,255,0.12);
+}
+.menu-icon img{
+  width:26px;height:26px;
+}
+
+.profile{
+  margin-top:6px;border-radius:999px;width:44px;height:44px;
+  overflow:hidden;
+}
+
+/* ------ MAIN ------ */
+.main{
+  flex:1;padding:22px 28px 34px 28px;
+  display:flex;flex-direction:column;gap:22px;min-width:0
+}
+
+.header-row{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.header-actions{
+  display:flex;gap:12px;align-items:center;
+}
+.pill{
+  background:rgba(255,255,255,0.03);
+  padding:8px 12px;
+  border-radius:999px;
+}
+
+/* ---- HERO CAROUSEL ---- */
+.hero{
+  position:relative;height:50vh;min-height:320px;
+  border-radius:16px;overflow:hidden;background:#111;
+}
+.hero .slides{
+  height:100%;
+  display:flex;
+  transition:transform .6s cubic-bezier(.22,.9,.3,1);
+}
+.slide{
+  min-width:100%;height:100%;
+  background-size:cover;background-position:center;
+  display:flex;align-items:flex-end;padding:28px 36px;
+}
+.slide .meta{
+  background:linear-gradient(90deg, rgba(0,0,0,0.6), transparent);
+  padding:20px;border-radius:12px;
+  max-width:60%;
+}
+.slide .meta h2{font-size:36px;margin:0}
+.slide .meta p{margin-top:8px;color:var(--muted);font-size:15px}
+
+.hero-dots{
+  position:absolute;right:28px;bottom:22px;display:flex;gap:10px;
+}
+.dot{
+  width:11px;height:11px;border-radius:50%;
+  background:rgba(255,255,255,0.2);cursor:pointer;
+  transition:0.2s;
+}
+.dot.active{
+  background:var(--accent);
+  box-shadow:0 0 20px rgba(0,170,255,0.4);
+}
+
+/* ---- CONTENT ROWS ---- */
+.row{
+  display:flex;flex-direction:column;gap:12px;
+}
+.title{
+  font-size:16px;margin-left:8px;font-weight:500;
+}
+.carousel-row{
+  display:flex;gap:14px;overflow:auto;padding-bottom:4px;
+}
+.carousel-row::-webkit-scrollbar{display:none}
+
+/* ---- CARDS ---- */
+.card{
+  min-width:260px;height:150px;border-radius:14px;
+  overflow:hidden;cursor:pointer;
+  transition:transform .25s, box-shadow .25s;
+}
+.card img{
+  width:100%;height:100%;object-fit:cover;
+}
+.card:hover{
+  transform:scale(1.08);
+  box-shadow:0 25px 60px rgba(0,0,0,0.55);
+}
+.card:active{
+  transform:scale(0.92);
+}
+
+/* ---- SMALL CARDS ---- */
+.small-card{
+  min-width:190px;height:120px;
+}
+
+/* ---- APPS ---- */
+.apps-row{
+  display:flex;gap:34px;align-items:flex-start;
+  padding:10px;margin-top:10px;
+}
+
+.app{
+  width:140px;height:140px;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  border-radius:22px;
+  background:rgba(255,255,255,0.03);
+  cursor:pointer;
+  transition:0.25s;
+}
+.app img{
+  width:80px;height:80px;
+  margin-bottom:10px;
+}
+.app-name{
+  margin-top:6px;
+  font-size:14px;
+  color:#fff;
+  opacity:0.85;
+  text-align:center;
+}
+.app:hover{
+  transform:scale(1.15);
+  box-shadow:0 10px 35px rgba(255,255,255,0.18);
+}
+.app:active{
+  transform:scale(0.9);
+}
+
+/* ---- AD POPUP ---- */
+.ad-floating{
+  position:fixed;right:28px;bottom:28px;
+  width:320px;background:#0f1720;padding:18px;border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.7);
+}
+.ad-close{
+  margin-top:12px;background:var(--accent);
+  border:none;padding:10px;border-radius:10px;width:100%;cursor:pointer;
+}
+
+/* ---- FOOTER ---- */
+.footer{
+  position:absolute;left:120px;bottom:12px;
+  color:var(--muted);font-size:13px;
+}
+
+.app-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+</style>
+</head>
+
+<body>
+<div class="app-shell">
+
+  <!-- SIDE MENU -->
+  <aside class="side-menu">
+    <div class="profile">
+      <img src="https://preview.redd.it/yta0xtiii3m21.jpg?width=640&crop=smart&auto=webp&s=e025206b98f5bc3e3628b8bb433e6085b4a2929f" style="width:100%;height:100%;object-fit:cover">
+    </div>
+
+    <div class="menu-icon active"><img src="https://img.icons8.com/ios-filled/50/ffffff/home.png"></div>
+    <div class="menu-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/search--v1.png"></div>
+    <div class="menu-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/compass.png"></div>
+    <div class="menu-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/controller.png"></div>
+    <div class="menu-icon"><img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <div class="header-row">
+      <h1>PirateTV • Bem Vindo, Daniel</h1>
+
+      <div class="header-actions">
+        <div class="pill">Para Você</div>
+        <div class="pill">Ao Vivo</div>
+        <div class="pill">Apps</div>
+      </div>
+    </div>
+
+    <!-- HERO BANNER -->
+    <section class="hero">
+      <div class="slides" id="slides">
+        <div class="slide" style="background-image:url('https://www.christianismeaujourdhui.info/wp-content/uploads/sites/3/2022/02/Chsen_Facebook-1603x0-c-default.jpg')">
+          <div class="meta">
+            <h2>The Chosen</h2>
+            <p>Watch now • Netflix</p>
+          </div>
+        </div>
+
+        <div class="slide" style="background-image:url('https://m.media-amazon.com/images/S/pv-target-images/d0b24f1c0f8dea8af395540d9fbe02226e213f6741761d21c23bbcab03439813.jpg')">
+          <div class="meta">
+            <h2>Fullmetal Alchemist (2003)</h2>
+            <p>Watch now • Crunchyroll</p>
+          </div>
+        </div>
+
+        <div class="slide" style="background-image:url('https://cdn.mos.cms.futurecdn.net/rDJegQJaCyGaYysj2g5XWY.jpg')">
+          <div class="meta">
+            <h2>Descubra Mais</h2>
+            <p>Filmes e Series pra Você</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-dots" id="heroDots"></div>
+    </section>
+
+    <!-- NOW PLAYING -->
+    <div class="row">
+  <div class="title">Reproduzidos Recentemente</div>
+  <div class="carousel-row">
+
+    <a href="pagina1.html" class="card">
+      <img src="https://m.media-amazon.com/images/I/4195dyf+rFL.png">
+    </a>
+
+    <a href="pagina2.html" class="card">
+      <img src="https://deadline.com/wp-content/uploads/2021/11/spidermannowayhomeposter.jpg?crop=51px%2C427px%2C1008px%2C565px&resize=681%2C383">
+    </a>
+
+    <a href="pagina3.html" class="card">
+      <img src="https://storage.googleapis.com/promocards-byspotify-com.appspot.com/sharing/63e0fc963d3078c9c97a84be9f2b633360d8aaf1.png">
+    </a>
+
+    <a href="pagina4.html" class="card">
+      <img src="https://image.idntimes.com/post/20220628/p9065121-b-h10-aa-56965fbaa68adf470a17cc45ea5d328d-37104d3bd8cf1fbb9d4b8c1651929f77.jpg">
+    </a>
+
+    <a href="pagina5.html" class="card">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEird4OSMxre-3SuZLb2dheVX1eAEHua-tjUAoKHSRqouSRhWKNhViezNNqeAxgmK2OmbgvXoop7XQCoW9PweW0lu2SGLCc3ovG53dVsn8O9kpCvI5hLBgS3Z3nGsLR5G7aCyJeXlGwQpEM/s1600/3626720-dragon-ball-z-kakarot-review-nologo.jpg">
+    </a>
+
+    <a href="pagina5.html" class="card">
+      <img src="https://occ-0-8407-2218.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABaXG3AC_KW8r-6q4SX0A1EtkETBjnWk3uv5rEhZTahtc7-XGpjdu6Jqa_cj_xLzI_cfnYdWK0etaRJk7Aewcx3nfhHXVGIrtLBM_.jpg?r=ce8">
+    </a>
+
+  </div>
+</div>
+
+
+    <!-- RECOMMENDED -->
+    <div class="row">
+  <div class="title">Recomendados</div>
+  <div class="carousel-row">
+
+    <a href="recomendado1.html" class="small-card card">
+      <img src="https://paroisseaixlesbains.fr/wp-content/uploads/2022/01/thechosen0-1170x658.jpg">
+    </a>
+
+    <a href="recomendado2.html" class="small-card card">
+      <img src="https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/af675c20-3a80-41ac-abcb-b669c3c44f63/compose?aspectRatio=1.78&format=webp&width=1200">
+    </a>
+
+    <a href="recomendado3.html" class="small-card card">
+      <img src="https://delfos.net.br/wp-content/uploads/2018/07/2018-07-17-cavaleirodastrevas10anos1.jpg">
+    </a>
+
+    <a href="recomendado4.html" class="small-card card">
+      <img src="https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQUq_sj3y88nqrcBnRm69rS7xur65HYgLkCS5MxHbA-7Dvd72b3Mek4eoiDb5Rb4-dzpaJz260toRGHQIeKdtAvUxWmmk5hio-pquv_pTESDyz5XQuv6K0vlqFQvsPXGuMA0OfA7q27_8cBy9ds-8RroPX1Y.jpg?r=9d3">
+    </a>
+
+    <a href="recomendado5.html" class="small-card card">
+      <img src="https://www.infomoney.com.br/wp-content/uploads/2024/11/SENNA_GALLERY_MORNING_LIGHT_01566_Hor-Final_R.jpg?quality=70">
+    </a>
+
+    <a href="recomendado6.html" class="small-card card">
+      <img src="https://cdn.kanobu.ru/articles/pics/tmp/images/2025/10/21/77eac9b7-8fad-4966-971b-05078e798ca0.jpg">
+    </a>
+
+    <a href="recomendado7.html" class="small-card card">
+      <img src="https://disney.images.edge.bamgrid.com/ripcut-delivery/v2/variant/disney/f16bec8c-bc32-43e4-9638-52da1ea6e77d/compose?aspectRatio=1.78&format=webp&width=1200">
+    </a>
+
+    <a href="recomendado8.html" class="small-card card">
+      <img src="https://m.media-amazon.com/images/S/pv-target-images/57b14ed9d7e3b2791898c67d6a3f6cec3d13bd57046fc83bc2805db2c38b1bbb.jpg">
+    </a>
+
+  </div>
+</div>
+
+
+   <!-- APPS -->
+<div class="apps-row">
+
+  <a href="https://www.netflix.com" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg">
+      <span class="app-name">Netflix</span>
+    </div>
+  </a>
+
+  <a href="https://www.disneyplus.com" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Crunchyroll_logo_2012v.png">
+      <span class="app-name">Crunchyroll</span>
+    </div>
+  </a>
+
+  <a href="https://www.primevideo.com" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Amazon_Prime_Video_logo_%282024%29.svg/1200px-Amazon_Prime_Video_logo_%282024%29.svg.png">
+      <span class="app-name">Prime Video</span>
+    </div>
+  </a>
+
+  <a href="https://www.youtube.com" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://img.freepik.com/vetores-premium/logo-vermelho-do-youtube-logo-de-midia-social_197792-1803.jpg?semt=ais_hybrid&w=740&q=80">
+      <span class="app-name">YouTube</span>
+    </div>
+  </a>
+
+  <a href="" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/2295px-Google_Drive_icon_%282020%29.svg.png">
+      <span class="app-name">Drive</span>
+    </div>
+  </a>
+
+  <a href="" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://play-lh.googleusercontent.com/CrPATF3XM8YNN1DsPcNYwB37-5ThmxQzVxtLVUAieVPS3mYpplv0NVa4fN6t_EmJ6nI">
+      <span class="app-name">GloboPlay</span>
+    </div>
+  </a>
+
+  <a href="" target="_blank" class="app-link">
+    <div class="app">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/1024px-Spotify_logo_without_text.svg.png">
+      <span class="app-name">Spotify</span>
+    </div>
+  </a>
+
+</div>
+
+
+    <div class="footer">© 2025 denielzTV</div>
+  </main>
+</div>
+
+<!-- POPUP -->
+<div class="ad-floating" id="adFloat">
+  <h4>Oferta: 30% OFF em assinaturas</h4>
+  <p>Aproveite agora! Promoção limitada.</p>
+  <button class="ad-close" id="closeAd">Fechar</button>
+</div>
+
+<script>
+// HERO DOTS + CAROUSEL
+const slides = document.getElementById("slides");
+const dotsContainer = document.getElementById("heroDots");
+const total = slides.children.length;
+let idx = 0;
+
+function createDots() {
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.dataset.i = i;
+    d.onclick = () => goTo(i);
+    dotsContainer.appendChild(d);
+  }
+}
+createDots();
+
+function update() {
+  slides.style.transform = `translateX(-${idx * 100}%)`;
+  document.querySelectorAll(".dot").forEach((d, i) =>
+    d.classList.toggle("active", i === idx)
+  );
+}
+update();
+
+function goTo(n) {
+  idx = n;
+  update();
+}
+
+setInterval(() => {
+  idx = (idx + 1) % total;
+  update();
+}, 5000);
+
+// Fechar popup
+document.getElementById("closeAd").onclick = () =>
+  document.getElementById("adFloat").style.display = "none";
+</script>
+
+</body>
+</html>
